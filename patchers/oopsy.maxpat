@@ -3,14 +3,14 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 8,
-			"minor" : 1,
-			"revision" : 11,
+			"minor" : 6,
+			"revision" : 5,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 178.0, 104.0, 721.0, 654.0 ],
+		"rect" : [ 178.0, 104.0, 1193.0, 923.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -45,7 +45,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 15.5, 577.0, 150.0, 60.0 ],
+					"patching_rect" : [ 15.5, 577.0, 153.0, 60.0 ],
 					"text" : "these objects grab the build path and allow users to open a file browser right to it"
 				}
 
@@ -118,13 +118,13 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-23",
-					"linecount" : 2,
+					"linecount" : 9,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 70.0, 713.0, 141.0, 35.0 ],
-					"text" : ";\rmax launchbrowser file://"
+					"patching_rect" : [ 70.0, 713.0, 141.0, 129.0 ],
+					"text" : ";\rmax launchbrowser \"file://Macintosh HD:/Users/grrrwaaa/Documents/Max 8/Packages/oopsy_prerelease/source/build_k_2daccum_2dbeta1_Accumv2/build\""
 				}
 
 			}
@@ -232,6 +232,7 @@
 							"parameter_linknames" : 1,
 							"parameter_longname" : "live.text[3]",
 							"parameter_mmax" : 1,
+							"parameter_modmode" : 0,
 							"parameter_shortname" : "FILTER",
 							"parameter_type" : 2
 						}
@@ -264,6 +265,7 @@
 							"parameter_linknames" : 1,
 							"parameter_longname" : "live.text[1]",
 							"parameter_mmax" : 1,
+							"parameter_modmode" : 0,
 							"parameter_shortname" : "FILTER",
 							"parameter_type" : 2
 						}
@@ -399,6 +401,7 @@
 							"parameter_linknames" : 1,
 							"parameter_longname" : "live.text[2]",
 							"parameter_mmax" : 1,
+							"parameter_modmode" : 0,
 							"parameter_shortname" : "FILTER",
 							"parameter_type" : 2
 						}
@@ -443,7 +446,7 @@
 				"box" : 				{
 					"fontsize" : 9.0,
 					"id" : "obj-76",
-					"items" : [ "patch", ",", "patch_init", ",", "field", ",", "petal", ",", "petal_125b_sm", ",", "pod", ",", "versio", ",", "bluemchen", ",", "nehcmeulb" ],
+					"items" : [ "patch", ",", "patch_init", ",", "field", ",", "petal", ",", "petal_125b_sm", ",", "pod", ",", "versio", ",", "bluemchen", ",", "nehcmeulb", ",", "/Users/grrrwaaa/c74/fancyyyyy/beta1-grrr/Accumv2.json" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -466,8 +469,8 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 8,
-							"minor" : 1,
-							"revision" : 11,
+							"minor" : 6,
+							"revision" : 5,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -520,7 +523,7 @@
 									"numinlets" : 10,
 									"numoutlets" : 10,
 									"outlettype" : [ "", "", "", "", "", "", "", "", "", "" ],
-									"patching_rect" : [ 17.0, 97.0, 471.0, 22.0 ],
+									"patching_rect" : [ 17.0, 66.0, 471.0, 22.0 ],
 									"text" : "routepass patch patch_init field petal petal_125b_sm pod versio bluemchen nehcmeulb"
 								}
 
@@ -691,7 +694,7 @@
 									"numinlets" : 0,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 17.0, 54.0, 30.0, 30.0 ]
+									"patching_rect" : [ 17.0, 23.0, 30.0, 30.0 ]
 								}
 
 							}
@@ -775,6 +778,13 @@
 , 							{
 								"patchline" : 								{
 									"destination" : [ "obj-27", 0 ],
+									"source" : [ "obj-29", 9 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-37", 0 ],
 									"source" : [ "obj-29", 8 ]
 								}
 
@@ -1009,7 +1019,7 @@
 				"box" : 				{
 					"comment" : "",
 					"id" : "obj-43",
-					"index" : 0,
+					"index" : 1,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -1090,8 +1100,8 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 8,
-							"minor" : 1,
-							"revision" : 11,
+							"minor" : 6,
+							"revision" : 5,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -1285,6 +1295,7 @@
 					"readonly" : 1,
 					"rounded" : 0.0,
 					"separator" : "newline",
+					"text" : "k_2daccum_2dbeta1",
 					"textcolor" : [ 1.0, 1.0, 1.0, 1.0 ]
 				}
 
@@ -1354,11 +1365,12 @@
 					"id" : "obj-8",
 					"maxclass" : "newobj",
 					"numinlets" : 2,
-					"numoutlets" : 4,
-					"outlettype" : [ "dictionary", "", "", "" ],
+					"numoutlets" : 5,
+					"outlettype" : [ "dictionary", "", "", "", "" ],
 					"patching_rect" : [ 580.0, 615.0, 50.5, 22.0 ],
 					"saved_object_attributes" : 					{
 						"embed" : 0,
+						"legacy" : 1,
 						"parameter_enable" : 0,
 						"parameter_mappable" : 0
 					}
@@ -1429,6 +1441,8 @@
 					"saved_object_attributes" : 					{
 						"autostart" : 0,
 						"defer" : 0,
+						"node_bin_path" : "",
+						"npm_bin_path" : "",
 						"watch" : 0
 					}
 ,
@@ -1471,8 +1485,8 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 8,
-							"minor" : 1,
-							"revision" : 11,
+							"minor" : 6,
+							"revision" : 5,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -2096,34 +2110,7 @@
 				}
 
 			}
- ],
-		"parameters" : 		{
-			"obj-32" : [ "live.text[2]", "FILTER", 0 ],
-			"obj-33" : [ "live.text[1]", "FILTER", 0 ],
-			"obj-34" : [ "live.text[3]", "FILTER", 0 ],
-			"parameterbanks" : 			{
-
-			}
-,
-			"inherited_shortname" : 1
-		}
-,
-		"dependency_cache" : [ 			{
-				"name" : "oopsy.snoop.js",
-				"bootpath" : "~/Documents/Max 8/Packages/Oopsy/javascript",
-				"patcherrelativepath" : "../javascript",
-				"type" : "TEXT",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "oopsy.node4max.js",
-				"bootpath" : "~/Documents/Max 8/Packages/Oopsy/javascript",
-				"patcherrelativepath" : "../javascript",
-				"type" : "TEXT",
-				"implicit" : 1
-			}
- ],
-		"autosave" : 0
+ ]
 	}
 
 }
