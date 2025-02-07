@@ -15,10 +15,8 @@ Object.filter = (obj, predicate) =>
     Object.keys(obj).filter(key => predicate(obj[key]))
     .map(key => obj[key]);
 
-function generateCodecs(external_codecs)
+function generateCodecs(external_codecs, target)
 {
-  console.log(external_codecs)
-  
   codec_string = `
     // External Codec Initialization
     daisy::SaiHandle::Config sai_config[${1 + external_codecs.length}];
@@ -78,28 +76,6 @@ function generateCodecs(external_codecs)
     `;
   }
 
-  // codec_string += `
-  // dsy_gpio_pin codec_reset_pin = som.GetPin(29);
-  // daisy::Ak4556::Init(codec_reset_pin);
-
-  // daisy::AudioHandle::Config cfg;
-  // cfg.blocksize  = 48;
-  // cfg.samplerate = daisy::SaiHandle::Config::SampleRate::SAI_48KHZ;
-  // cfg.postgain   = 0.5f;
-  // som.audio_handle.Init(
-  //   cfg,
-  //   sai_handle[0]`;
-
-  // for (let i = 0; i < external_codecs.length; i++)
-  // {
-  //   codec_string += ",\n    ";
-  //   codec_string += `sai_handle[${i + 1}]`;
-  // }
-
-  // codec_string += `
-  //   );
-  // `;
-
   codec_string += `
     dsy_gpio_pin codec_reset_pin = som.GetPin(29);
     daisy::Ak4556::Init(codec_reset_pin);
@@ -107,19 +83,20 @@ function generateCodecs(external_codecs)
     daisy::AudioHandle::Config cfg;
     cfg.blocksize  = 48;
     cfg.samplerate = daisy::SaiHandle::Config::SampleRate::SAI_48KHZ;
-    cfg.postgain   = 0.5f;
-    som.audio_handle.Init(cfg, sai_handle[0]);
-    `;
+    cfg.postgain   = float(${(target.audio && target.audio.postgain) || 0.5});
+    som.audio_handle.Init(
+      cfg,
+      sai_handle[0]`;
 
   for (let i = 0; i < external_codecs.length; i++)
   {
-    codec_string += `
-    cfg.blocksize  = 48;
-    cfg.samplerate = daisy::SaiHandle::Config::SampleRate::SAI_48KHZ;
-    cfg.postgain   = float(${external_codecs[i].postgain || "0.5"});
-    som.audio_handle.Init(cfg, sai_handle[${i + 1}]);
-    `;
+    codec_string += ",\n    ";
+    codec_string += `sai_handle[${i + 1}]`;
   }
+
+  codec_string += `
+    );
+  `;
 
   return codec_string;
 }
@@ -488,7 +465,7 @@ ${replacements.name != '' ? `struct Daisy${replacements.name[0].toUpperCase()}${
 
     ${replacements.CodeClass != '' ? '// Custom classes\n    ' + replacements.CodeClass : ''}
 
-    ${replacements.external_codecs.length == 0 ? '' : generateCodecs(replacements.external_codecs)}
+    ${replacements.external_codecs.length == 0 ? '' : generateCodecs(replacements.external_codecs, target)}
 
     ${replacements.som == 'seed' ? 'som.adc.Start();' : ''}
   }
