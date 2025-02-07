@@ -27,7 +27,8 @@
 				"sck": 28,
 				"sb": 25,
 				"sa": 26
-			}
+			},
+			"postgain": 0.5
 		}
 	],
 	"components": {

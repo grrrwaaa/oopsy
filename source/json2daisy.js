@@ -17,86 +17,109 @@ Object.filter = (obj, predicate) =>
 
 function generateCodecs(external_codecs)
 {
+  console.log(external_codecs)
+  
   codec_string = `
-  // External Codec Initialization
-  daisy::SaiHandle::Config sai_config[${1 + external_codecs.length}];
+    // External Codec Initialization
+    daisy::SaiHandle::Config sai_config[${1 + external_codecs.length}];
 
-  // Internal Codec
-  if(som.CheckBoardVersion() == daisy::DaisySeed::BoardVersion::DAISY_SEED_1_1)
-  {
-      sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
-      sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
-      sai_config[0].a_dir         = daisy::SaiHandle::Config::Direction::RECEIVE;
-      sai_config[0].b_dir         = daisy::SaiHandle::Config::Direction::TRANSMIT;
-  }
-  else
-  {
-      sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
-      sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
-      sai_config[0].a_dir         = daisy::SaiHandle::Config::Direction::TRANSMIT;
-      sai_config[0].b_dir         = daisy::SaiHandle::Config::Direction::RECEIVE;
-  }
-  sai_config[0].periph          = daisy::SaiHandle::Config::Peripheral::SAI_1;
-  sai_config[0].sr              = daisy::SaiHandle::Config::SampleRate::SAI_48KHZ;
-  sai_config[0].bit_depth       = daisy::SaiHandle::Config::BitDepth::SAI_24BIT;
-  sai_config[0].a_sync          = daisy::SaiHandle::Config::Sync::MASTER;
-  sai_config[0].b_sync          = daisy::SaiHandle::Config::Sync::SLAVE;
-  sai_config[0].pin_config.fs   = {DSY_GPIOE, 4};
-  sai_config[0].pin_config.mclk = {DSY_GPIOE, 2};
-  sai_config[0].pin_config.sck  = {DSY_GPIOE, 5};
-  `
-
-  for (let i = 0; i < external_codecs.length; i++)
-  {
-    codec_string += `
-  sai_config[${i + 1}].periph          = daisy::SaiHandle::Config::Peripheral::${external_codecs[i].periph};
-  sai_config[${i + 1}].sr              = daisy::SaiHandle::Config::SampleRate::SAI_48KHZ;
-  sai_config[${i + 1}].bit_depth       = daisy::SaiHandle::Config::BitDepth::SAI_24BIT;
-  sai_config[${i + 1}].a_sync          = daisy::SaiHandle::Config::Sync::${external_codecs[i].a_sync};
-  sai_config[${i + 1}].b_sync          = daisy::SaiHandle::Config::Sync::${external_codecs[i].b_sync};
-  sai_config[${i + 1}].a_dir           = daisy::SaiHandle::Config::Direction::${external_codecs[i].a_dir};
-  sai_config[${i + 1}].b_dir           = daisy::SaiHandle::Config::Direction::${external_codecs[i].b_dir};
-  sai_config[${i + 1}].pin_config.fs   = som.GetPin(${external_codecs[i].pin.fs});
-  sai_config[${i + 1}].pin_config.mclk = som.GetPin(${external_codecs[i].pin.mclk});
-  sai_config[${i + 1}].pin_config.sck  = som.GetPin(${external_codecs[i].pin.sck});
-  sai_config[${i + 1}].pin_config.sa   = som.GetPin(${external_codecs[i].pin.sa});
-  sai_config[${i + 1}].pin_config.sb   = som.GetPin(${external_codecs[i].pin.sb});
-  `;
-  }
-
-  codec_string += `
-  daisy::SaiHandle sai_handle[${external_codecs.length + 1}];
-  sai_handle[0].Init(sai_config[0]);
-  `;
+    // Internal Codec
+    if(som.CheckBoardVersion() == daisy::DaisySeed::BoardVersion::DAISY_SEED_1_1)
+    {
+        sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
+        sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
+        sai_config[0].a_dir         = daisy::SaiHandle::Config::Direction::RECEIVE;
+        sai_config[0].b_dir         = daisy::SaiHandle::Config::Direction::TRANSMIT;
+    }
+    else
+    {
+        sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
+        sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
+        sai_config[0].a_dir         = daisy::SaiHandle::Config::Direction::TRANSMIT;
+        sai_config[0].b_dir         = daisy::SaiHandle::Config::Direction::RECEIVE;
+    }
+    sai_config[0].periph          = daisy::SaiHandle::Config::Peripheral::SAI_1;
+    sai_config[0].sr              = daisy::SaiHandle::Config::SampleRate::SAI_48KHZ;
+    sai_config[0].bit_depth       = daisy::SaiHandle::Config::BitDepth::SAI_24BIT;
+    sai_config[0].a_sync          = daisy::SaiHandle::Config::Sync::MASTER;
+    sai_config[0].b_sync          = daisy::SaiHandle::Config::Sync::SLAVE;
+    sai_config[0].pin_config.fs   = {DSY_GPIOE, 4};
+    sai_config[0].pin_config.mclk = {DSY_GPIOE, 2};
+    sai_config[0].pin_config.sck  = {DSY_GPIOE, 5};
+    `
 
   for (let i = 0; i < external_codecs.length; i++)
   {
     codec_string += `
-  sai_handle[${i + 1}].Init(sai_config[${i + 1}]);
-  `;
+    sai_config[${i + 1}].periph          = daisy::SaiHandle::Config::Peripheral::${external_codecs[i].periph};
+    sai_config[${i + 1}].sr              = daisy::SaiHandle::Config::SampleRate::SAI_48KHZ;
+    sai_config[${i + 1}].bit_depth       = daisy::SaiHandle::Config::BitDepth::SAI_24BIT;
+    sai_config[${i + 1}].a_sync          = daisy::SaiHandle::Config::Sync::${external_codecs[i].a_sync};
+    sai_config[${i + 1}].b_sync          = daisy::SaiHandle::Config::Sync::${external_codecs[i].b_sync};
+    sai_config[${i + 1}].a_dir           = daisy::SaiHandle::Config::Direction::${external_codecs[i].a_dir};
+    sai_config[${i + 1}].b_dir           = daisy::SaiHandle::Config::Direction::${external_codecs[i].b_dir};
+    sai_config[${i + 1}].pin_config.fs   = som.GetPin(${external_codecs[i].pin.fs});
+    sai_config[${i + 1}].pin_config.mclk = som.GetPin(${external_codecs[i].pin.mclk});
+    sai_config[${i + 1}].pin_config.sck  = som.GetPin(${external_codecs[i].pin.sck});
+    sai_config[${i + 1}].pin_config.sa   = som.GetPin(${external_codecs[i].pin.sa});
+    sai_config[${i + 1}].pin_config.sb   = som.GetPin(${external_codecs[i].pin.sb});
+    `;
   }
 
   codec_string += `
-  dsy_gpio_pin codec_reset_pin = som.GetPin(29);
-  daisy::Ak4556::Init(codec_reset_pin);
-
-  daisy::AudioHandle::Config cfg;
-  cfg.blocksize  = 48;
-  cfg.samplerate = daisy::SaiHandle::Config::SampleRate::SAI_48KHZ;
-  cfg.postgain   = 0.5f;
-  som.audio_handle.Init(
-    cfg,
-    sai_handle[0]`;
+    daisy::SaiHandle sai_handle[${external_codecs.length + 1}];
+    sai_handle[0].Init(sai_config[0]);
+    `;
 
   for (let i = 0; i < external_codecs.length; i++)
   {
-    codec_string += ",\n    ";
-    codec_string += `sai_handle[${i + 1}]`;
+    codec_string += `
+    sai_handle[${i + 1}].Init(sai_config[${i + 1}]);
+    `;
   }
 
+  // codec_string += `
+  // dsy_gpio_pin codec_reset_pin = som.GetPin(29);
+  // daisy::Ak4556::Init(codec_reset_pin);
+
+  // daisy::AudioHandle::Config cfg;
+  // cfg.blocksize  = 48;
+  // cfg.samplerate = daisy::SaiHandle::Config::SampleRate::SAI_48KHZ;
+  // cfg.postgain   = 0.5f;
+  // som.audio_handle.Init(
+  //   cfg,
+  //   sai_handle[0]`;
+
+  // for (let i = 0; i < external_codecs.length; i++)
+  // {
+  //   codec_string += ",\n    ";
+  //   codec_string += `sai_handle[${i + 1}]`;
+  // }
+
+  // codec_string += `
+  //   );
+  // `;
+
   codec_string += `
-    );
-  `;
+    dsy_gpio_pin codec_reset_pin = som.GetPin(29);
+    daisy::Ak4556::Init(codec_reset_pin);
+
+    daisy::AudioHandle::Config cfg;
+    cfg.blocksize  = 48;
+    cfg.samplerate = daisy::SaiHandle::Config::SampleRate::SAI_48KHZ;
+    cfg.postgain   = 0.5f;
+    som.audio_handle.Init(cfg, sai_handle[0]);
+    `;
+
+  for (let i = 0; i < external_codecs.length; i++)
+  {
+    codec_string += `
+    cfg.blocksize  = 48;
+    cfg.samplerate = daisy::SaiHandle::Config::SampleRate::SAI_48KHZ;
+    cfg.postgain   = float(${external_codecs[i].postgain || "0.5"});
+    som.audio_handle.Init(cfg, sai_handle[${i + 1}]);
+    `;
+  }
 
   return codec_string;
 }
