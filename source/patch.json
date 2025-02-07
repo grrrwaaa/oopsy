@@ -12,8 +12,9 @@
 	"max_apps": 8,
 	"display": {},
 	"audio": {
-    "channels": 4
-  },
+		"channels": 4,
+		"postgain": 0.5
+	},
 	"external_codecs": [
 		{
 			"periph": "SAI_2",
@@ -27,8 +28,7 @@
 				"sck": 28,
 				"sb": 25,
 				"sa": 26
-			},
-			"postgain": 0.5
+			}
 		}
 	],
 	"components": {
