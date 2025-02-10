@@ -77,7 +77,7 @@ function generateCodecs(external_codecs, target)
   }
 
   codec_string += `
-    dsy_gpio_pin codec_reset_pin = som.GetPin(29);
+    daisy::Pin codec_reset_pin = som.GetPin(29);
     daisy::Ak4556::Init(codec_reset_pin);
 
     daisy::AudioHandle::Config cfg;

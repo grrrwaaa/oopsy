@@ -264,7 +264,7 @@ const component_defs = {
 		]
 	},
 	GateOut: {
-		typename: "daisy::dsy_gpio",
+		typename: "daisy::Pin",
 		pin: "a",
 		mode: "DSY_GPIO_MODE_OUTPUT_PP",
 		pull: "DSY_GPIO_NOPULL",
