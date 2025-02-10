@@ -285,6 +285,9 @@ exports.generate_header = function generate_header(board_description_object, tar
     target.defines.OOPSY_OLED_DISPLAY_HEIGHT = target.display.dim[1]
   }
 
+  let oversampling = ""
+  if ("adc" in target) oversampling = target.adc.oversampling
+
   let has_display = target.defines.OOPSY_TARGET_HAS_OLED || false;
 
   let replacements = {}
@@ -437,7 +440,7 @@ ${replacements.name != '' ? `struct Daisy${replacements.name[0].toUpperCase()}${
     ${replacements.gatein != '' ? '// Gate ins\n    ' + replacements.gatein : ''}
     ${replacements.encoder != '' ? '// Rotary encoders\n    ' + replacements.encoder : ''}
     ${replacements.init_single != '' ? '// Single channel ADC initialization\n    ' + replacements.init_single : ''}
-    ${replacements.som == 'seed' && replacements.analogcount ? 'som.adc.Init(cfg, ANALOG_COUNT, daisy::AdcHandle::OVS_NONE);' : ''}
+    ${replacements.som == 'seed' && replacements.analogcount ? `som.adc.Init(cfg, ANALOG_COUNT, ${oversampling ? oversampling : "daisy::AdcHandle::OVS_NONE"});` : ''}
     ${replacements.ctrl_init != '' ? '// AnalogControl objects\n    ' + replacements.ctrl_init : ''}
     ${replacements.ctrl_mux_init != '' ? '// Multiplexed AnlogControl objects\n    ' + replacements.ctrl_mux_init : ''}
     ${replacements.led != '' ? '// LEDs\n    ' + replacements.led : ''}

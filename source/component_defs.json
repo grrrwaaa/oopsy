@@ -337,14 +337,15 @@
 		]
 	},
 	"CD4051": {
-		"init_single": "size_t {name}_index = {i};\n    cfg[{name}_index].InitMux(som.GetPin({pin_adc}), {mux_count}, som.GetPin({pin_sel0}), som.GetPin({pin_sel1}), som.GetPin({pin_sel2}));",
+		"init_single": "size_t {name}_index = {i};\n    cfg[{name}_index].InitMux(som.GetPin({pin_adc}), {mux_count}, som.GetPin({pin_sel0}), som.GetPin({pin_sel1}), som.GetPin({pin_sel2}), {speed});",
 		"typename": "",
 		"mux_count": 1,
+		"speed": "daisy::AdcChannelConfig::ConversionSpeed::SPEED_8CYCLES_5",
 		"pin": "adc,sel0,sel1,sel2",
 		"mapping": []
 	},
 	"CD4051AnalogControl": {
-		"map_init": "{name}.Init(som.adc.GetMuxPtr({parent}_index, {index}), som.AudioCallbackRate(), {flip}, {invert});",
+		"map_init": "{name}.Init(som.adc.GetMuxPtr({parent}_index, {index}), som.AudioCallbackRate(), {flip}, {invert}, {slew});",
 		"parent": "",
 		"index": 0,
 		"typename": "daisy::AnalogControl",
