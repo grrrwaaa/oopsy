@@ -524,8 +524,8 @@ namespace oopsy {
 			config.parity        = daisy::UartHandler::Config::Parity::NONE;
 			config.mode          = daisy::UartHandler::Config::Mode::TX_RX;
 			config.wordlength    = daisy::UartHandler::Config::WordLength::BITS_8;
-			config.pin_config.rx = {DSY_GPIOB, 7};
-			config.pin_config.tx = {DSY_GPIOB, 6};
+			config.pin_config.rx = daisy::Pin(daisy::GPIOPort::PORTB, 7); //{DSY_GPIOB, 7};
+			config.pin_config.tx = daisy::Pin(daisy::GPIOPort::PORTB, 6); //{DSY_GPIOB, 6};
 			uart.Init(config);
 			uart.StartRx();
 			#endif

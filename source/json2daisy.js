@@ -24,15 +24,15 @@ function generateCodecs(external_codecs, target)
     // Internal Codec
     if(som.CheckBoardVersion() == daisy::DaisySeed::BoardVersion::DAISY_SEED_1_1)
     {
-        sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
-        sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
+        sai_config[0].pin_config.sa = daisy::Pin(daisy::GPIOPort::PORTE, 6); //{DSY_GPIOE, 6};
+        sai_config[0].pin_config.sb = daisy::Pin(daisy::GPIOPort::PORTE, 3); //{DSY_GPIOE, 3};
         sai_config[0].a_dir         = daisy::SaiHandle::Config::Direction::RECEIVE;
         sai_config[0].b_dir         = daisy::SaiHandle::Config::Direction::TRANSMIT;
     }
     else
     {
-        sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
-        sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
+        sai_config[0].pin_config.sa = daisy::Pin(daisy::GPIOPort::PORTE, 6); //{DSY_GPIOE, 6};
+        sai_config[0].pin_config.sb = daisy::Pin(daisy::GPIOPort::PORTE, 3); //{DSY_GPIOE, 3};
         sai_config[0].a_dir         = daisy::SaiHandle::Config::Direction::TRANSMIT;
         sai_config[0].b_dir         = daisy::SaiHandle::Config::Direction::RECEIVE;
     }
@@ -41,9 +41,9 @@ function generateCodecs(external_codecs, target)
     sai_config[0].bit_depth       = daisy::SaiHandle::Config::BitDepth::SAI_24BIT;
     sai_config[0].a_sync          = daisy::SaiHandle::Config::Sync::MASTER;
     sai_config[0].b_sync          = daisy::SaiHandle::Config::Sync::SLAVE;
-    sai_config[0].pin_config.fs   = {DSY_GPIOE, 4};
-    sai_config[0].pin_config.mclk = {DSY_GPIOE, 2};
-    sai_config[0].pin_config.sck  = {DSY_GPIOE, 5};
+    sai_config[0].pin_config.fs   = daisy::Pin(daisy::GPIOPort::PORTE, 4); //{DSY_GPIOE, 4};
+    sai_config[0].pin_config.mclk = daisy::Pin(daisy::GPIOPort::PORTE, 2); //{DSY_GPIOE, 2};
+    sai_config[0].pin_config.sck  = daisy::Pin(daisy::GPIOPort::PORTE, 5); //{DSY_GPIOE, 5};
     `
 
   for (let i = 0; i < external_codecs.length; i++)

@@ -132,7 +132,7 @@
 	},
 	"AnalogControl": {
 		"init_single": "cfg[{i}].InitSingle(som.GetPin({pin}));",
-		"map_init": "{name}.Init(som.adc.GetPtr({i}), som.AudioCallbackRate(), {flip}, {invert});",
+		"map_init": "{name}.Init(som.adc.GetPtr({i}), som.AudioCallbackRate(), {flip}, {invert}, {slew});",
 		"typename": "daisy::AnalogControl",
 		"direction": "in",
 		"pin": "a",
@@ -198,16 +198,17 @@
 		]
 	},
 	"GateOut": {
-		"map_init": "{name}.pin  = som.GetPin({pin});\n    {name}.mode = {mode};\n    {name}.pull = {pull};\n    dsy_gpio_init(&{name});",
+		"map_init": "{name}.Init(som.GetPin({pin}), {mode}, {pull}, {speed});",
 		"typename": "daisy::GPIO",
 		"direction": "out",
 		"pin": "a",
-		"mode": "DSY_GPIO_MODE_OUTPUT_PP",
-		"pull": "DSY_GPIO_NOPULL",
+		"mode": "daisy::GPIO::Mode::OUTPUT",
+		"pull": "daisy::GPIO::Pull::NOPULL",
+		"speed": "daisy::GPIO::Speed::LOW",
 		"mapping": [
 			{
 				"name": "{name}",
-				"set": "dsy_gpio_write(&{class_name}.{name}, {value});"
+				"set": "{class_name}.{name}.Write({value});"
 			}
 		]
 	},
