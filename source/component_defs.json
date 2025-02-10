@@ -6,7 +6,7 @@
 		"pin": "a",
 		"type": "daisy::Switch::TYPE_MOMENTARY",
 		"polarity": "daisy::Switch::POLARITY_INVERTED",
-		"pull": "daisy::Switch::PULL_UP",
+		"pull": "daisy::GPIO::Pull::PULLUP",
 		"process": "{name}.Debounce();",
 		"updaterate": "{name}.SetUpdateRate(som.AudioCallbackRate());",
 		"mapping": [
