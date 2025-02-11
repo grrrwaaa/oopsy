@@ -49,6 +49,7 @@ function generateCodecs(external_codecs, target)
   for (let i = 0; i < external_codecs.length; i++)
   {
     codec_string += `
+    // external codec ${i + 1}
     sai_config[${i + 1}].periph          = daisy::SaiHandle::Config::Peripheral::${external_codecs[i].periph};
     sai_config[${i + 1}].sr              = daisy::SaiHandle::Config::SampleRate::SAI_48KHZ;
     sai_config[${i + 1}].bit_depth       = daisy::SaiHandle::Config::BitDepth::SAI_24BIT;
@@ -64,21 +65,25 @@ function generateCodecs(external_codecs, target)
     `;
   }
 
+  
   codec_string += `
     daisy::SaiHandle sai_handle[${external_codecs.length + 1}];
-    sai_handle[0].Init(sai_config[0]);
-    `;
+    sai_handle[0].Init(sai_config[0]);`;
 
   for (let i = 0; i < external_codecs.length; i++)
   {
     codec_string += `
-    sai_handle[${i + 1}].Init(sai_config[${i + 1}]);
-    `;
+    sai_handle[${i + 1}].Init(sai_config[${i + 1}]);`;
+  }
+
+  for (let i = 0; i < external_codecs.length; i++)
+  {
+    codec_string += `
+    external_codec${i+1}.Init(som.GetPin(29));`;
   }
 
   codec_string += `
-    daisy::Pin codec_reset_pin = som.GetPin(29);
-    daisy::Ak4556::Init(codec_reset_pin);
+    //daisy::Ak4556::Init(som.GetPin(29));
 
     daisy::AudioHandle::Config cfg;
     cfg.blocksize  = 48;
@@ -90,8 +95,8 @@ function generateCodecs(external_codecs, target)
 
   for (let i = 0; i < external_codecs.length; i++)
   {
-    codec_string += ",\n    ";
-    codec_string += `sai_handle[${i + 1}]`;
+    codec_string += `,
+      sai_handle[${i + 1}]`;
   }
 
   codec_string += `
@@ -392,9 +397,17 @@ exports.generate_header = function generate_header(board_description_object, tar
   replacements.displayprocess = filter_map_template(components, 'display', key_exclude='is_default', match_exclude=true);
   replacements.hidupdaterates = filter_map_template(components, 'updaterate', key_exclude='is_default', match_exclude=true);
 
+  // compenent member declarations:
   component_decls = Object.filter(components, item => !(item.is_default || false));
   component_decls = component_decls.filter(item => 'typename' in item && item.typename != "");
   replacements.comps = component_decls.map(item => `${stringFormatMap(item.typename, item)} ${item.name}`).join(";\n  ") + ';';
+  // add codecs to components:
+  replacements.comps += (replacements.external_codecs.map((item, i) => `
+  daisy::Ak4556 external_codec${i+1};
+  `));
+  
+  //${replacements.external_codecs.length == 0 ? '' : generateCodecs(replacements.external_codecs, target)}
+
   non_class_decls = component_decls.filter(item => 'non_class_decl' in item);
   replacements.non_class_declarations = non_class_decls.map(item => stringFormatMap(item.non_class_decl, item)).join("\n");
 
