@@ -1093,9 +1093,8 @@ function generate_app(app, hardware, target, config) {
 
 			// was this history mapped to something?
 			if (map) {
-				nodes[name].src = cname
+				nodes[map].src = cname
 			}
-
 		}
 		return name;
 	})
