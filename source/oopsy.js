@@ -375,6 +375,7 @@ function run() {
 		if (old_json)
 			hardware.defines.OOPSY_OLD_JSON = 1
 
+
 		for (let alias in hardware.aliases) {
 			let map = hardware.aliases[alias]
 			if (hardware.labels.params[map]) hardware.labels.params[alias] = map
@@ -893,6 +894,8 @@ function generate_app(app, hardware, target, config) {
 	app.nodes = nodes;
 	app.inserts = [];
 
+	
+
 	gen.audio_ins = app.patch.ins.map((s, i)=>{
 		let name = "gen_in"+(i+1)
 		let label = s.replace(/"/g, "").trim();
@@ -921,7 +924,7 @@ function generate_app(app, hardware, target, config) {
 	})
 
 
-	gen.audio_outs = app.patch.outs.map((s, i)=>{
+	gen.audio_outs = app.patch.outs.map((s, i)=> {
 		let name = "gen_out"+(i+1)
 		let label = s.replace(/"/g, "").trim();
 		let src = daisy.audio_outs[i];
@@ -977,6 +980,7 @@ function generate_app(app, hardware, target, config) {
 	gen.histories = app.patch.histories.map(history=>{
 		const name = history.name
 		const varname = "gen_history_"+name;
+		const cname = "gen."+history.cname
 		let node = Object.assign({
 			varname: varname,
 		}, history);
@@ -1075,6 +1079,7 @@ function generate_app(app, hardware, target, config) {
 			}
 		} else {
 
+
 			// search for a matching [out] name / prefix:
 			let map
 			let maplabel
@@ -1088,10 +1093,7 @@ function generate_app(app, hardware, target, config) {
 
 			// was this history mapped to something?
 			if (map) {
-				nodes[name] = node
-				node.type = "t_sample";
-				nodes[map].src = "gen."+node.cname; //from.push(src);
-				// nodes[src].to.push(map)
+				nodes[name].src = cname
 			}
 
 		}
@@ -1423,6 +1425,7 @@ struct App_${name} : public oopsy::App<App_${name}> {
 		float * inputs[] = { ${gen.audio_ins.map(name=>nodes[name].src).join(", ")} };
 		// ${gen.audio_outs.map(name=>nodes[name].label).join(", ")}:
 		float * outputs[] = { ${gen.audio_outs.map(name=>nodes[name].src).join(", ")} };
+		// execute the gen~ patch:
 		gen.perform(inputs, outputs, size);
 		${daisy.device_outs.map(name => nodes[name])
 			.filter(node => node.src || node.from.length)
@@ -1431,7 +1434,7 @@ struct App_${name} : public oopsy::App<App_${name}> {
 		${node.name} = ${node.from.map(name=>name+"[ size-1]").join(" + ")}; // device out`).join("")}
 		${daisy.device_outs.map(name => nodes[name])
 			.filter(node => node.src || node.from.length)
-			.filter(node => node.config.where == "audio")
+			.filter(node => node.config && node.config.where == "audio")
 			.map(node=>`
 		${interpolate(node.config.code, node)} // set out`).join("")}
 		${daisy.datahandlers.map(name => nodes[name])
