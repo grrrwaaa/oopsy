@@ -103,6 +103,21 @@ function generateCodecs(external_codecs, target)
     );
   `;
 
+  // for (let i = 0; i < external_codecs.length; i++) {
+  //   if (external_codecs[i].a_async) {
+  //     codec_string += `
+  //   // When SAI2 Audio Block A is set up to receive clock signal, it should be
+  //   // in asynchronous mode (SCK and FS are inputs in this case).
+  //   SAI2_Block_A->CR1 &= ~SAI_xCR1_SYNCEN_Msk;`;
+  //   }
+  //   if (external_codecs[i].b_async) {
+  //     codec_string += `
+  //   // When SAI2 Audio Block B is set up to receive clock signal, it should be
+  //   // in asynchronous mode (SCK and FS are inputs in this case).
+  //   SAI2_Block_B->CR1 &= ~SAI_xCR1_SYNCEN_Msk;`;
+  //   }
+  // }
+
   return codec_string;
 }
 
