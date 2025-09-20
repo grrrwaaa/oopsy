@@ -1370,7 +1370,7 @@ ${gen.datas.map(name=>nodes[name])
 .filter(node => node.floats)
 .map(node=>`
 // preloaded raw values of data ${node.name}
-const float preloaded_${node.cname}[] = {\n\t${node.floats.join(",\n\t")}\n};`).join("\n")}
+const float preloaded_${node.name}[] = {\n\t${node.floats.join(",\n\t")}\n};`).join("\n")}
 
 struct App_${name} : public oopsy::App<App_${name}> {
 	${gen.params
@@ -1388,6 +1388,7 @@ struct App_${name} : public oopsy::App<App_${name}> {
 	float ${node.name};`).join("")}
 	${app.audio_outs.map(name=>`
 	float ${name}[OOPSY_BLOCK_SIZE];`).join("")}
+	${app.inserts.concat(hardware.inserts).filter(o => o.where == "app_struct").map(o => o.code).join("\n\t")}
 
 	void init(oopsy::GenDaisy& daisy) {
 		daisy.gen = ${name}::create(daisy.hardware.${som_or_seed}.AudioSampleRate(), daisy.hardware.${som_or_seed}.AudioBlockSize());
@@ -1416,7 +1417,7 @@ struct App_${name} : public oopsy::App<App_${name}> {
 		${gen.datas.map(name=>nodes[name])
 			.filter(node => node.floats)
 			.map(node=>`
-		memcpy(gen.${node.cname}.mData, preloaded_${node.cname}, sizeof(preloaded_${node.cname}));`).join("")}
+		memcpy(gen.${node.cname}.mData, preloaded_${node.name}, sizeof(preloaded_${node.name}));`).join("")}
 
 		${app.inserts.concat(hardware.inserts).filter(o => o.where == "app_init").map(o => o.code).join("\n\t")}
 	}
