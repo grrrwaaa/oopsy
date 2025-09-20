@@ -86,9 +86,13 @@ function configure(doExport) {
 								var frames = buffer.framecount()
 								var chans = buffer.channelcount()
 								if (frames > 0 && chans > 0) {
-									var wavname = node.name + ".wav"
 									// write out that file so it can be referenced:
-									buffer.send("write", obj.getattr("exportfolder") + wavname);
+									// WAV or RAW?
+									if (node.name.slice(-4).toLowerCase() == "_wav") {
+										buffer.send("write", obj.getattr("exportfolder") + node.name + ".wav");
+									} else if (node.name.slice(-8).toLowerCase() == "_preload") {
+										buffer.send("writeraw", obj.getattr("exportfolder") + node.name + ".bin", "float32", 0, 1);
+									}
 									//post("found buffer mapped Data", node.name, bufname, wavname, frames, chans)
 								}
 							} else if (node.typename == "Buffer") {

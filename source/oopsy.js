@@ -772,24 +772,42 @@ function analyze_cpp(cpp, hardware, cpp_path) {
 				param.chans = Math.round(args[1])
 				gen.datas.push(param)
 
-				let wavname
-				let wavmatch = /(\w+)_wav$/g.exec(param.name)
-				if (wavmatch) {
-					wavname = wavmatch[1]+".wav";
+				// if there's a .bin file in the path, use it:
+				let binpath = path.join(cpp_path, "..", param.name+".bin")
+				if (fs.existsSync(binpath)) {
+					console.log(`[data ${param.name}] has possible source: ${path.resolve( binpath )}`)
+
+					let buffer = fs.readFileSync(binpath)
+					let data = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength)
+					let floats = []
+					// make sure this is no bigger than the data itself:
+					let bytelen = Math.min(buffer.byteLength, 4*param.dim*param.chans) // float32 is 4 bytes
+					for (i=0; i<bytelen; i+=4) {
+						floats.push(data.getFloat32(i, true)) // being careful with endianness
+					}
+					param.floats = floats
 				} else {
-					let wavpath = path.join(cpp_path, "..", param.name+".wav")
-					if (fs.existsSync(wavpath)) {
-						console.log(`[data ${param.name}] has possible source: ${path.resolve( wavpath )}`)
-						wavname = param.name+".wav";
-						//wavpath = path.resolve( wavpath )
+
+					let wavname
+					let wavmatch = /(\w+)_wav$/g.exec(param.name)
+					if (wavmatch) {
+						wavname = wavmatch[1]+".wav";
+					} else {
+						let wavpath = path.join(cpp_path, "..", param.name+".wav")
+						if (fs.existsSync(wavpath)) {
+							console.log(`[data ${param.name}] has possible source: ${path.resolve( wavpath )}`)
+							wavname = param.name+".wav";
+							//wavpath = path.resolve( wavpath )
+						}
+					}
+					if (wavname) {
+						param.wavname = wavname
+						// mark hardware accordingly:
+						hardware.defines.OOPSY_TARGET_USES_SDMMC = 1
+						hardware.defines.USE_FATFS = 1
 					}
 				}
-				if (wavname) {
-					param.wavname = wavname
-					// mark hardware accordingly:
-					hardware.defines.OOPSY_TARGET_USES_SDMMC = 1
-					hardware.defines.USE_FATFS = 1
-				}
+				
 			} else {
 				console.error("failed to match details of data "+param.name)
 			}
@@ -1348,6 +1366,12 @@ function generate_app(app, hardware, target, config) {
 
 	const struct = `
 
+${gen.datas.map(name=>nodes[name])
+.filter(node => node.floats)
+.map(node=>`
+// preloaded raw values of data ${node.name}
+const float preloaded_${node.cname}[] = {\n\t${node.floats.join(",\n\t")}\n};`).join("\n")}
+
 struct App_${name} : public oopsy::App<App_${name}> {
 	${gen.params
 		.map(name=>`
@@ -1389,6 +1413,12 @@ struct App_${name} : public oopsy::App<App_${name}> {
 			.filter(node => node.wavname)
 			.map(node=>`
 		daisy.sdcard_load_wav("${node.wavname}", gen.${node.cname});`).join("")}
+		${gen.datas.map(name=>nodes[name])
+			.filter(node => node.floats)
+			.map(node=>`
+		memcpy(gen.${node.cname}.mData, preloaded_${node.cname}, sizeof(preloaded_${node.cname}));`).join("")}
+
+		${app.inserts.concat(hardware.inserts).filter(o => o.where == "app_init").map(o => o.code).join("\n\t")}
 	}
 
 	void audioCallback(oopsy::GenDaisy& daisy, daisy::AudioHandle::InputBuffer hardware_ins, daisy::AudioHandle::OutputBuffer hardware_outs, size_t size) {
