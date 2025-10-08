@@ -142,6 +142,11 @@ function configure(doExport) {
 		return;
 	} 
 
+	// makes sense to have apps sorted predictably rather than arbitrarily in the patcher content;
+	// we can use alphabetic ordering:
+	names.sort()
+	cpps.sort()
+
 	var name = names.join("_")
 	outlet(1, name)
 
