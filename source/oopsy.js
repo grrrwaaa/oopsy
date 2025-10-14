@@ -775,7 +775,7 @@ function analyze_cpp(cpp, hardware, cpp_path) {
 				// if there's a .bin file in the path, use it:
 				let binpath = path.join(cpp_path, "..", param.name+".bin")
 				if (fs.existsSync(binpath)) {
-					console.log(`[data ${param.name}] has possible source: ${path.resolve( binpath )}`)
+					console.log(`[data ${param.name}] has possible source: ${path.resolve( binpath )} with len ${param.dim} x chans ${param.chans}`)
 
 					let buffer = fs.readFileSync(binpath)
 					let data = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength)
@@ -786,6 +786,7 @@ function analyze_cpp(cpp, hardware, cpp_path) {
 						floats.push(data.getFloat32(i, true)) // being careful with endianness
 					}
 					param.floats = floats
+					console.log(`generated float array for preloading of length ${buffer.byteLength} vs ${4*param.dim*param.chans}`)
 				} else {
 
 					let wavname

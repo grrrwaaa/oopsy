@@ -97,15 +97,18 @@ t_sample gen_msp_pow(t_sample value, t_sample power) {
 	return pow(value, power);
 }
 
-void genlib_data_setbuffer(t_genlib_data *b, void *ref) {
-	//genlib_report_error("not supported for export targets\n");
-}
-
 typedef struct {
 	t_genlib_data_info	info;
 	t_sample			cursor;	// used by Delay
 	//t_symbol *		name;
 } t_dsp_gen_data;
+
+
+void genlib_data_setbuffer(t_genlib_data *b, void *ref) {
+	t_dsp_gen_data *self = (t_dsp_gen_data *)b;
+	// WARNING: THIS HAS NO MEMORY PROTECTION WHATSOEVER! 
+	memcpy(self->info.data, ref, sizeof(t_sample) * self->info.dim * self->info.channels);
+}
 
 t_genlib_data *genlib_obtain_data_from_reference(void *ref) {
 	t_dsp_gen_data *self = (t_dsp_gen_data *)genlib_sysmem_newptr(sizeof(t_dsp_gen_data));
