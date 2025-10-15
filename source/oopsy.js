@@ -1439,6 +1439,7 @@ struct App_${name} : public oopsy::App<App_${name}> {
 			.filter(node => node.to.length)
 			.map(node=>`
 		float ${node.name} = ${node.code};`).join("")}
+		${app.inserts.concat(hardware.inserts).filter(o => o.where == "audio_preprocess_controls").map(o => o.code).join("\n\t")}
 		${gen.params
 			.map(name=>nodes[name])
 			.filter(node => node.src)
