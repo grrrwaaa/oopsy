@@ -290,6 +290,7 @@ function run() {
 		// assert(valid_soms.includes(som_match[1]), `unkown SOM ${som_match[1]}. Valid SOMs: ${valid_soms.join(', ')}`);
 		// som = som_match[1];
 	}
+	let target_dir = path.dirname(target_path)
 	console.log(`Target ${target} configured in path ${target_path}`)
 	assert(fs.existsSync(target_path), `couldn't find target configuration file ${target_path}`);
 	const hardware = JSON.parse(fs.readFileSync(target_path, "utf8"));
@@ -317,8 +318,21 @@ function run() {
 			"datas": {}
 		}
 		hardware.inserts = hardware.inserts || []
+		// iterate inserts and replace cpp references with JSON-friendly code
+		hardware.inserts = hardware.inserts.map((insert => {
+			if (insert.cpp) {
+				let cpp_path = path.join(target_dir, insert.cpp)
+				if (fs.existsSync(cpp_path)) {
+					insert.code = fs.readFileSync(cpp_path, "utf8")
+				}
+			}
+			return insert
+		}))
 		hardware.defines = hardware.defines || {}
+
+		fs.writeFileSync(path.join(target_dir, target + "_parsed.json"), JSON.stringify(hardware, null, "\t"), "utf-8")
 		hardware.struct = "";
+		
 
 		let tempname = hardware.name;
 		hardware.name = '';
