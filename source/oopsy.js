@@ -146,6 +146,8 @@ block1, block2, etc. up to block256 will set the block size
 
 fastmath will replace some expensive math operations with faster approximations
 
+ofast will optimize some math ops by ignoring some edge-cases with IEEE floats
+
 boost will increase the CPU from 400Mhz to 480Mhz
 
 nooled will disable code generration for OLED (it will be blank)
@@ -228,6 +230,7 @@ function run() {
 			case "nooled":
 			case "boost":
 			case "fastmath": options[arg] = true; break;
+			case "ofast": options[arg] = true; break;
 
 			default: {
 				// assume anything else is a file path:
@@ -485,6 +488,8 @@ function run() {
 	const includes = hardware.includes.map(
 		item => `-I"${posixify_path(path.relative(build_path, item))}"`);
 
+	const OPT = options.ofast ? "-Ofast" : "-O3";
+
 	fs.writeFileSync(makefile_path, `
 # Project Name
 TARGET = ${build_name}
@@ -498,7 +503,7 @@ ${includes.length > 0 ? `C_INCLUDES = ${includes.join('\\\n')}` : ``}
 LIBDAISY_DIR = ${(posixify_path(path.relative(build_path, path.join(__dirname, "libdaisy"))).replace(" ", "\\ "))}
 ${hardware.defines.OOPSY_TARGET_USES_SDMMC ? `USE_FATFS = 1`:``}
 # Optimize (i.e. CFLAGS += -O3):
-OPT = -O3
+OPT = ${OPT}
 # Core location, and generic Makefile.
 SYSTEM_FILES_DIR = $(LIBDAISY_DIR)/core
 include $(SYSTEM_FILES_DIR)/Makefile
@@ -506,8 +511,8 @@ include $(SYSTEM_FILES_DIR)/Makefile
 CFLAGS+=-I"${posixify_path(path.relative(build_path, path.join(__dirname, "gen_dsp")))}" \\
 -I${posixify_path(path.relative(build_path, path.join(__dirname, "petal_sm")))}
 # Silence irritating warnings:
-CFLAGS+=-O3 -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable
-CPPFLAGS+=-O3 -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable
+CFLAGS+=${OPT} -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable
+CPPFLAGS+=${OPT} -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable
 
 `, "utf-8");
 
@@ -1442,7 +1447,7 @@ struct App_${name} : public oopsy::App<App_${name}> {
 		${name}::State& gen = *(${name}::State *)daisy.gen;
 		// NOT NEEDED, ALREADY RAN IN audio_preperform()
 		// SHOULD NOT BE RUN TWICE BECAUSE OF DEBOUNCING (ENCODER)
-		// ${hardware.som == 'seed' ? "hardware.ProcessAllControls();" : ""}
+		//${hardware.som == 'seed' ? "hardware.ProcessAllControls();" : ""}
 		${app.inserts.concat(hardware.inserts).filter(o => o.where == "audio").map(o => o.code).join("\n\t")}
 		${daisy.device_inputs.map(name => nodes[name])
 			.filter(node => node.to.length)

@@ -9,6 +9,7 @@ var samplerate = "48kHz";
 var blocksize = "48";
 var boost = 1;
 var fastmath = 0;
+var ofast = 0;
 var sep = "/";
 var dict = new Dict();
 
@@ -153,6 +154,7 @@ function configure(doExport) {
 	var args = [target, samplerate, "block"+blocksize].concat(cpps);
 	if (boost) args.push("boost");
 	if (fastmath) args.push("fastmath");
+	if (ofast) args.push("ofast");
 	outlet(0, args)
 }
 
