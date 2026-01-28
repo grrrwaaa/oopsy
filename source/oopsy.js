@@ -1412,9 +1412,9 @@ struct App_${name} : public oopsy::App<App_${name}> {
 
 	// direct accessors for the Data members:
 	${gen.datas.map(name=>nodes[name]).map(node=>`
-	inline float * getdata_${node.name}(UFG::State& gen) { return gen.${node.cname}.mData; }
-	inline long getdim_${node.name}(UFG::State& gen) { return gen.${node.cname}.dim; }
-	inline long getchannels_${node.name}(UFG::State& gen) { return gen.${node.cname}.channels; }
+	inline float * getdata_${node.name}(${name}::State& gen) { return gen.${node.cname}.mData; }
+	inline long getdim_${node.name}(${name}::State& gen) { return gen.${node.cname}.dim; }
+	inline long getchannels_${node.name}(${name}::State& gen) { return gen.${node.cname}.channels; }
 	`).join("")}
 
 	void init(oopsy::GenDaisy& daisy) {
