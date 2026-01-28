@@ -1410,6 +1410,13 @@ struct App_${name} : public oopsy::App<App_${name}> {
 	float ${name}[OOPSY_BLOCK_SIZE];`).join("")}
 	${app.inserts.concat(hardware.inserts).filter(o => o.where == "app_struct").map(o => o.code).join("\n\t")}
 
+	// direct accessors for the Data members:
+	${gen.datas.map(name=>nodes[name]).map(node=>`
+	inline float * getdata_${node.name}(UFG::State& gen) { return gen.${node.cname}.mData; }
+	inline long getdim_${node.name}(UFG::State& gen) { return gen.${node.cname}.dim; }
+	inline long getchannels_${node.name}(UFG::State& gen) { return gen.${node.cname}.channels; }
+	`).join("")}
+
 	void init(oopsy::GenDaisy& daisy) {
 		daisy.gen = ${name}::create(daisy.hardware.${som_or_seed}.AudioSampleRate(), daisy.hardware.${som_or_seed}.AudioBlockSize());
 		${name}::State& gen = *(${name}::State *)daisy.gen;
