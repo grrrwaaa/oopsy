@@ -727,6 +727,7 @@ function analyze_cpp(cpp, hardware, cpp_path) {
 			// find the initializer:
 			result.default = constexpr( new RegExp(`\\s${cname}\\s+=\\s+([^;]+);`, "gm").exec(cpp)[1] );
 
+
 			return result;
 		}),
 	}
@@ -1129,10 +1130,12 @@ function generate_app(app, hardware, target, config) {
 				}
 			})
 
+			nodes[name] = node;
+
 			// was this history mapped to something?
 			if (map) {
 				nodes[map].src = cname
-			}
+			} 
 		}
 		return name;
 	})
@@ -1410,9 +1413,11 @@ struct App_${name} : public oopsy::App<App_${name}> {
 	float ${name}[OOPSY_BLOCK_SIZE];`).join("")}
 	${app.inserts.concat(hardware.inserts).filter(o => o.where == "app_struct").map(o => o.code).join("\n\t")}
 
-	// direct accessors for the Data members:
-	${gen.datas.map(name=>nodes[name]).map(node=>`
-	inline float * getdata_${node.name}(${name}::State& gen) { return gen.${node.cname}.mData; }
+	// direct accessors for History members:
+	${gen.histories.map(name=>nodes[name]).map(node=>`inline float get_${node.name}(${name}::State& gen) { return gen.${node.cname}; }
+	`).join("")}
+	// direct accessors for Data members:
+	${gen.datas.map(name=>nodes[name]).map(node=>`inline float * getdata_${node.name}(${name}::State& gen) { return gen.${node.cname}.mData; }
 	inline long getdim_${node.name}(${name}::State& gen) { return gen.${node.cname}.dim; }
 	inline long getchannels_${node.name}(${name}::State& gen) { return gen.${node.cname}.channels; }
 	`).join("")}
