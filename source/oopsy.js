@@ -1560,7 +1560,7 @@ struct App_${name} : public oopsy::App<App_${name}> {
 		${interpolate(node.code, node)}`).join("")}
 		${daisy.device_outs.map(name => nodes[name])
 			.filter(node => node.src || node.from.length)
-			.filter(node => node.config.where == "main")
+			.filter(node => node.config && node.config.where == "main")
 			.map(node=>`
 		${interpolate(node.config.code, node)}`).join("")}
 		${defines.OOPSY_TARGET_USES_MIDI_UART ? `
@@ -1616,7 +1616,7 @@ struct App_${name} : public oopsy::App<App_${name}> {
 		${interpolate(node.code, node)}`).join("")}
 		${daisy.device_outs.map(name => nodes[name])
 			.filter(node => node.src || node.from.length)
-			.filter(node => node.config.where == "display")
+			.filter(node => node.config && node.config.where == "display")
 			.map(node=>`
 		${interpolate(node.config.code, node)}`).join("")}
 		${hardware.som == 'seed' ? "hardware.Display();" : ""}
